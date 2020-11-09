@@ -1,21 +1,21 @@
 const MongooseService = require( "./MongooseService" ); // Data Access Layer
-const Role = require( "../models/Roles" ); // Database Model
+const Modules = require( "../models/Modules" ); // Database Model
 const logger = require("./Logger");
 
-class RoleService {
+class ModuleService {
   /**
-   * @description Create an instance of role Service
+   * @description Create an instance of Module Service
    */
   constructor () {
     // Create instance of Data Access layer using our desired model
-    this.MongooseServiceInstance = new MongooseService( Role );
+    this.MongooseServiceInstance = new MongooseService( Modules );
   }
 
   
-  async create ( role ) {
+  async create ( module ) {
     try {
       
-      const result = await this.MongooseServiceInstance.create( role );
+      const result = await this.MongooseServiceInstance.create( module );
       return { success: true, body: result };
     } catch ( err ) {
       return { success: false, error: err };
@@ -26,10 +26,10 @@ class RoleService {
     try {
       const query = {active : true , _id : id };
       const projection = { __v : 0 , active : 0};
-      //const result = await this.MongooseServiceInstance.findWithActive( id , undefined,undefined , 'role');
       const result = await this.MongooseServiceInstance.findOne(query , projection , undefined , 'permissions');
       return { success: true, body: result };
     } catch (error) {
+      console.log(error);
       return { success: false, error: err };
     }
   }
@@ -47,10 +47,10 @@ class RoleService {
   }
 
 
-  async update (id , role ) {
+  async update (id , module ) {
     try {
      
-      const result = await this.MongooseServiceInstance.update(id , role , { runValidators: true, context: 'query' });
+      const result = await this.MongooseServiceInstance.update(id , module , { runValidators: true, context: 'query' });
       return { success: true, body: result };
     } catch ( err ) {
       return { success: false, error: err };
@@ -76,7 +76,7 @@ class RoleService {
         sort : sort
     };
     
-    const myAggregate = Role.aggregate(
+    const myAggregate = Modules.aggregate(
         [
             { $addFields: 
                 { result: 
@@ -95,7 +95,7 @@ class RoleService {
         ]
 
     );
-    const result = await Role.aggregatePaginate(myAggregate, options);
+    const result = await Modules.aggregatePaginate(myAggregate, options);
 
       return { success: true, body: result };
     } catch ( err ) {
@@ -106,12 +106,12 @@ class RoleService {
   
   }
 
-  async updateWithQuery (id , role ) {
+  async updateWithQuery (id , module ) {
     try {
       const query = {active : true , _id : id};
       
-      const result = await this.MongooseServiceInstance.updateWithQuery(query , role , { runValidators: true, context: 'query' });
-      return { success: true, body: 'Role Updated Successfully' };
+      const result = await this.MongooseServiceInstance.updateWithQuery(query , module , { runValidators: true, context: 'query' });
+      return { success: true, body: 'Module Updated Successfully' };
     } catch ( err ) {
       return { success: false, error: err };
     }
@@ -119,4 +119,4 @@ class RoleService {
 
 }
 
-module.exports = RoleService;
+module.exports = ModuleService;

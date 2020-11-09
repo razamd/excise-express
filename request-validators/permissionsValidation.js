@@ -8,12 +8,11 @@ const createUpdateValidation = data => {
         name : Joi.string().
         min(2)
         .required(),
-        displayName : Joi.string().
-        min(4)
+        action : Joi.string().
+        min(2)
         .required(),
-        description : Joi.string(),
-        permissions : Joi.array()
-        
+       
+        url : Joi.string()
     });
     return schema.validate(data);
 }

@@ -12,7 +12,7 @@ const RolesSchema = new Schema(
             min : 6 ,
             max : 255
         },
-        display_name : {
+        displayName : {
             type : String ,
             required : true ,
             min : 4 ,
@@ -23,10 +23,18 @@ const RolesSchema = new Schema(
             min : 6 ,
             max : 4000
         },
-        users : {
-            type : Schema.Types.ObjectId ,
-            ref : "User"
-        },
+        users : [
+            {
+                type : Schema.Types.ObjectId ,
+                ref : "User"
+            }
+        ],
+        permissions : [
+            {
+                type : Schema.Types.ObjectId,
+                ref : 'Permissions'
+            }
+        ],
         active : {
             type : Boolean ,
             default : true ,

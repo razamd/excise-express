@@ -65,10 +65,11 @@ class MongooseService {
    * @param {object} [options] Optional options to provide query
    * @returns {Promise} Returns the results of the query
    */
-  findOne ( query, projection = { __v: 0 }, options = { lean: true } ) {
+  findOne ( query, projection = { __v: 0 }, options = { lean: true } , populate = '') {
     return this.model
       .findOne( query, projection, options )
       .select( { __v: 0 } )
+      .populate(populate , '-__v' ,  { active: true })
       .exec();
   }
 
@@ -82,11 +83,12 @@ class MongooseService {
    * @param {object} [options] Optional options to provide query
    * @returns {Promise} Returns the results of the query
    */
-  find ( query, projection = { __v: 0 }, sort = { id: 1 }, options = { lean: true } ) {
+  find ( query, projection = { __v: 0 }, sort = { id: 1 }, options = { lean: true } , populate = '' ) {
     return this.model
       .find( query, projection, options )
       .sort( sort )
       .select( { __v: 0 } )
+      .populate(populate , '-__v',  { active: true })
       .exec();
   }
 
@@ -102,7 +104,7 @@ class MongooseService {
   findById ( id, projection = { __v: 0 }, options = { lean: true } , populate) {
     return this.model
       .findById( id, projection, options )
-      .populate(populate , '-__v')
+      .populate(populate , '-__v',  { active: true })
       .exec();
   }
 

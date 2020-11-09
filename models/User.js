@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema(
             min : 6 ,
             max : 1024
         },
-        role : {
+        roleId : {
             type : mongoose.Schema.Types.ObjectId,
             ref : "Roles"
         },

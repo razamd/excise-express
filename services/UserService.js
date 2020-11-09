@@ -38,9 +38,10 @@ class UserService {
       const query = {active : true , _id : id };
       const projection = { __v : 0 , password : 0 , active : 0};
       //const result = await this.MongooseServiceInstance.findWithActive( id , undefined,undefined , 'role');
-      const result = await this.MongooseServiceInstance.findOne(query , projection);
+      const result = await this.MongooseServiceInstance.findOne(query , projection ,undefined, 'roleId');
       return { success: true, body: result };
     } catch (error) {
+      console.log(error);
       return { success: false, error: err };
     }
   }
@@ -49,7 +50,7 @@ class UserService {
     try {
       const query = {active : true };
       const projection = { __v : 0 , password : 0 , active : 0};
-      const result = await this.MongooseServiceInstance.find(query , projection);
+      const result = await this.MongooseServiceInstance.find(query , projection ,undefined , undefined , 'roleId');
       return { success: true, body: result };
     } catch (error) {
       return { success: false, error: err };
@@ -145,7 +146,7 @@ class UserService {
                     }
                 }
             },
-            { $match: { result: true } }
+            { $match: { result: true , active : true } }
             
             //{ $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
         ]

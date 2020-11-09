@@ -15,7 +15,7 @@ class AuthService {
   }
 
   async signIn(username, password) {
-    const userRecord = await this.MongooseServiceInstance.findOne({'username' : username});
+    const userRecord = await this.MongooseServiceInstance.findOne({'username' : username , active : true});
     console.log(userRecord);
 
     if (!userRecord) {

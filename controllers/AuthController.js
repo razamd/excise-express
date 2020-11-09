@@ -15,7 +15,8 @@ async function signIn ( req , res ) {
     const result = await AuthServiceInstance.signIn(req.body.username , req.body.password);
     return res.send( result );
   } catch ( err ) {
-      logger.info(err);
-    res.status( 500 ).send( err );
+    console.log(err);
+    logger.error(err);
+    res.status( 500 ).json( { success: false, error: 'Invalid Username or Password' } );
   }
 }
