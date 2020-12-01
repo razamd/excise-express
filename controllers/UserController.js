@@ -2,7 +2,7 @@ const { registrationValidation, updateValidation, paginationValidation } = requi
 const UserService = require( "../services/UserService" );
 const UserServiceInstance = new UserService();
 
-module.exports = { createCord , findById , getAll , update , paginationViews , deleteUser , updateWithQuery};
+module.exports = { createCord , findById , getAll , update , paginationViews , deleteUser , updateWithQuery , findWithPermsById};
 
 /**
  * @description Create a cord with the provided body
@@ -14,7 +14,7 @@ async function createCord ( req, res ) {
   try {
     const {error} = registrationValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     // We only pass the body object, never the req object
     const createdCord = await UserServiceInstance.create( req.body );
@@ -48,7 +48,7 @@ async function update ( req, res ) {
   try {
     const {error} = updateValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     // We only pass the body object, never the req object
     const updatedUser = await UserServiceInstance.update( req.params.id, req.body );
@@ -63,7 +63,7 @@ async function paginationViews ( req , res ) {
   try {
     const {error} = paginationValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     const page = req.body.page ;
     const limit = req.body.limit;
@@ -94,11 +94,21 @@ async function updateWithQuery ( req, res ) {
   try {
     const {error} = updateValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     // We only pass the body object, never the req object
     const updatedUser = await UserServiceInstance.updateWithQuery( req.params.id, req.body );
     return res.send( updatedUser );
+  } catch ( err ) {
+    res.status( 500 ).send( err );
+  }
+}
+
+async function findWithPermsById ( req , res ) {
+
+  try {
+    const user = await UserServiceInstance.findByIdWithPermissions( req.params.id );
+    return res.send( user );
   } catch ( err ) {
     res.status( 500 ).send( err );
   }

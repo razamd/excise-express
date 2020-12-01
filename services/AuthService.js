@@ -19,7 +19,7 @@ class AuthService {
     console.log(userRecord);
 
     if (!userRecord) {
-      throw new Error('User not registered');
+      return { success: false, error: 'Incorrect Credentials' };
     }
     /**
      * We use verify from argon2 to prevent 'timing based' attacks
@@ -36,13 +36,13 @@ class AuthService {
         user.password = undefined;
         return { user, token };
         } else {
-            return { success: false, error: 'Invalid Password' };
+            return { success: false, error: 'Incorrect Credentials' };
         //throw new Error('Invalid Password');
         }
         
     } catch (error) {
         console.log(error);
-        return { success: false, error: 'Invalid Password' };
+        return { success: false, error: 'Incorrect Credentials' };
     }
     
   }

@@ -8,7 +8,7 @@ module.exports = { signIn };
 async function signIn ( req , res ) {
     const {error} = loginValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
 
   try {
@@ -17,6 +17,6 @@ async function signIn ( req , res ) {
   } catch ( err ) {
     console.log(err);
     logger.error(err);
-    res.status( 500 ).json( { success: false, error: 'Invalid Username or Password' } );
+    res.status( 500 ).json( { success: false, error: 'Incorrect Credentials' } );
   }
 }

@@ -38,6 +38,7 @@ class UserService {
       const query = {active : true , _id : id };
       const projection = { __v : 0 , password : 0 , active : 0};
       //const result = await this.MongooseServiceInstance.findWithActive( id , undefined,undefined , 'role');
+      
       const result = await this.MongooseServiceInstance.findOne(query , projection ,undefined, 'roleId');
       return { success: true, body: result };
     } catch (error) {
@@ -175,6 +176,30 @@ class UserService {
       const result = await this.MongooseServiceInstance.updateWithQuery(query , userToUpdate , { runValidators: true, context: 'query' });
       return { success: true, body: result };
     } catch ( err ) {
+      return { success: false, error: err };
+    }
+  }
+
+  async findByIdWithPermissions( id ){
+    try {
+      const query = {active : true , _id : id };
+      const projection = { __v : 0 , password : 0 , active : 0};
+      //const result = await this.MongooseServiceInstance.findWithActive( id , undefined,undefined , 'role');
+      const populate  = {
+        path: 'roleId',
+        select: '-active -__v',
+        match: { active: true },
+        
+        populate: { 
+          path: 'permissions' ,
+          select: '-active -__v',
+          match: { active: true }
+        }
+      }
+      const result = await this.MongooseServiceInstance.findOneWithCustomPopulate(query , projection ,undefined , populate);
+      return { success: true, body: result };
+    } catch (error) {
+      console.log(error);
       return { success: false, error: err };
     }
   }

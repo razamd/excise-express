@@ -141,6 +141,14 @@ class MongooseService {
       .exec();
   }
 
+
+  findOneWithCustomPopulate ( query, projection = { __v: 0 }, options = { lean: true } , populate = undefined) {
+    return this.model
+      .findOne( query, projection, options )
+      .select( { __v: 0 } )
+      .populate(populate)
+      .exec();
+  }
 }
 
 module.exports = MongooseService;

@@ -12,6 +12,14 @@ module.exports = { validateToken };
  * @returns {*}
  */
 function validateToken ( req, res, next ) {
+  //Define service paths where token is not required
+  let nonSecurePaths = [
+    '/' , 
+    '/authenticate/auth'
+  ]
+
+  if ( nonSecurePaths.includes(req.path) ) return next();
+
   const token = ( req.headers && req.headers.authorization !== undefined )
     ? req.headers.authorization.slice( 7 )
     : req.query.appToken || req.params.appToken || req.body.appToken;

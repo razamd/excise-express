@@ -4,8 +4,15 @@ const authRoute = require("./auth");
 const roleRoute = require('./role');
 const permissionRoute = require('./permission');
 const moudleRoute = require('./modules');
+const { validateToken } = require("../middlewares/token");
 
 const routes = app => {
+
+  //Apply validation on all paths
+
+  app.all("*" , validateToken);
+
+
   app.use( ( req, res, next ) => {
     res.setHeader( "Access-Control-Allow-Origin", "*" );
     res.setHeader(
@@ -27,6 +34,8 @@ const routes = app => {
   app.use("/authenticate", authRoute);
   app.use("/permission" , permissionRoute);
   app.use("/module" , moudleRoute);
+
+
 };
 
 module.exports = routes;

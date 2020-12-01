@@ -15,7 +15,7 @@ async function create ( req, res ) {
   try {
     const {error} = createUpdateValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     // We only pass the body object, never the req object
     const createdRole = await RoleServiceInstance.create( req.body );
@@ -50,7 +50,7 @@ async function update ( req, res ) {
   try {
     const {error} = createUpdateValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     // We only pass the body object, never the req object
     const updatedRole = await RoleServiceInstance.update( req.params.id, req.body );
@@ -65,7 +65,7 @@ async function paginationViews ( req , res ) {
   try {
     const {error} = paginationValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     const page = req.body.page ;
     const limit = req.body.limit;
@@ -95,7 +95,7 @@ async function updateWithQuery ( req, res ) {
   try {
     const {error} = createUpdateValidation(req.body);
     if(error){
-        return res.status(400).send({ success: false, error: error.details[0].message });
+        return res.status(200).send({ success: false, error: error.details[0].message });
     }
     // We only pass the body object, never the req object
     const updatedRole = await RoleServiceInstance.updateWithQuery( req.params.id, req.body );
