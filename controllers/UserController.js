@@ -1,3 +1,4 @@
+const User = require("../models/User");
 const { registrationValidation, updateValidation, paginationValidation } = require("../request-validators/userValidation");
 const UserService = require( "../services/UserService" );
 const UserServiceInstance = new UserService();
@@ -15,6 +16,15 @@ async function createCord ( req, res ) {
     const {error} = registrationValidation(req.body);
     if(error){
         return res.status(200).send({ success: false, error: error.details[0].message });
+    }
+    const existedUserName = await UserServiceInstance.getByUsername(req.body.username);
+    if(existedUserName.body){
+      return res.status(200).send({ success: false, error: 'username already exist' });
+    }
+
+    const existedEmail = await UserServiceInstance.getByEmail(req.body.email);
+    if(existedEmail.body){
+      return res.status(200).send({ success: false, error: 'Email already exist' });
     }
     // We only pass the body object, never the req object
     const createdCord = await UserServiceInstance.create( req.body );
@@ -50,9 +60,30 @@ async function update ( req, res ) {
     if(error){
         return res.status(200).send({ success: false, error: error.details[0].message });
     }
-    // We only pass the body object, never the req object
-    const updatedUser = await UserServiceInstance.update( req.params.id, req.body );
-    return res.send( updatedUser );
+
+    const currentUser = await UserServiceInstance.findById(req.params.id);
+    if(currentUser.body){
+      console.log(currentUser.body);
+      if(currentUser.body.username !== req.body.username){
+        const existedUserName = await UserServiceInstance.getByUsername(req.body.username);
+        if(existedUserName.body){
+          return res.status(200).send({ success: false, error: 'username already exist' });
+        }
+      }
+      if(currentUser.body.email !== req.body.email){
+        const existedEmail = await UserServiceInstance.getByEmail(req.body.email);
+        if(existedEmail.body){
+          return res.status(200).send({ success: false, error: 'Email already exist' });
+        }
+      }
+      // We only pass the body object, never the req object
+      const updatedUser = await UserServiceInstance.update( req.params.id, req.body );
+      return res.send( updatedUser );
+    }
+    else{
+      return res.status(200).send({ success: false, error: 'user not found' });
+    }
+    
   } catch ( err ) {
     res.status( 500 ).send( err );
   }

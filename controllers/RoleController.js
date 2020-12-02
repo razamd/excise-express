@@ -17,6 +17,11 @@ async function create ( req, res ) {
     if(error){
         return res.status(200).send({ success: false, error: error.details[0].message });
     }
+    const existedName = await RoleServiceInstance.getByName(req.body.name);
+    if(existedName.body){
+      return res.status(200).send({ success: false, error: 'name already exist' });
+    }
+
     // We only pass the body object, never the req object
     const createdRole = await RoleServiceInstance.create( req.body );
     return res.send( createdRole );
@@ -52,9 +57,22 @@ async function update ( req, res ) {
     if(error){
         return res.status(200).send({ success: false, error: error.details[0].message });
     }
-    // We only pass the body object, never the req object
-    const updatedRole = await RoleServiceInstance.update( req.params.id, req.body );
-    return res.send( updatedRole );
+    const currentRole = await RoleServiceInstance.findById(req.params.id);
+    if(currentRole.body){
+      if(currentUser.body.name !== req.body.name){
+        const existedName = await RoleServiceInstance.getByName(req.body.name);
+        if(existedName.body){
+          return res.status(200).send({ success: false, error: 'name already exist' });
+        }
+        // We only pass the body object, never the req object
+        const updatedRole = await RoleServiceInstance.update( req.params.id, req.body );
+        return res.send( updatedRole );
+      }      
+    }else{
+      return res.status(200).send({ success: false, error: 'role not found' });
+    }
+    
+    
   } catch ( err ) {
     res.status( 500 ).send( err );
   }

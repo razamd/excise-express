@@ -67,6 +67,15 @@ class UserService {
     }
   }
 
+  async getByEmail(email){
+    try {
+      const result = await this.MongooseServiceInstance.findOne({'email' : email , active : true });
+      return { success: true, body: result };
+    } catch (error) {
+      return { success: false, error: err };
+    }
+  }
+
   async update (id , userToUpdate ) {
     try {
       const salt = randomBytes(32);
@@ -197,6 +206,20 @@ class UserService {
         }
       }
       const result = await this.MongooseServiceInstance.findOneWithCustomPopulate(query , projection ,undefined , populate);
+      return { success: true, body: result };
+    } catch (error) {
+      console.log(error);
+      return { success: false, error: err };
+    }
+  }
+
+  async findByUsername( username ){
+    try {
+      const query = {active : true , username : username };
+      const projection = { __v : 0 , password : 0 , active : 0};
+      //const result = await this.MongooseServiceInstance.findWithActive( id , undefined,undefined , 'role');
+      
+      const result = await this.MongooseServiceInstance.findOne(query , projection ,undefined, 'roleId');
       return { success: true, body: result };
     } catch (error) {
       console.log(error);

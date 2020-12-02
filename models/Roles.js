@@ -8,7 +8,6 @@ const RolesSchema = new Schema(
         name : {
             type: String ,
             required : true ,
-            unique : true ,
             min : 6 ,
             max : 255
         },

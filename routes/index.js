@@ -4,29 +4,19 @@ const authRoute = require("./auth");
 const roleRoute = require('./role');
 const permissionRoute = require('./permission');
 const moudleRoute = require('./modules');
+const cors = require('cors');
 const { validateToken } = require("../middlewares/token");
 
 const routes = app => {
 
   //Apply validation on all paths
 
+  
+
+  
+  app.use(cors());
+
   app.all("*" , validateToken);
-
-
-  app.use( ( req, res, next ) => {
-    res.setHeader( "Access-Control-Allow-Origin", "*" );
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-    );
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "X-Requested-With, content-type, x-access-token, authorization"
-    );
-    res.setHeader( "Access-Control-Allow-Credentials", true );
-    res.removeHeader( "X-Powered-By" );
-    next();
-  } );
 
   app.use( "/", template );
   app.use("/user" , userRoute);

@@ -117,6 +117,15 @@ class RoleService {
     }
   }
 
+  async getByName(name){
+    try {
+      const result = await this.MongooseServiceInstance.findOne({'name' : name , active : true });
+      return { success: true, body: result };
+    } catch (error) {
+      return { success: false, error: err };
+    }
+  }
+
 }
 
 module.exports = RoleService;

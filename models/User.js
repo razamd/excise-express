@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 const Roles = require('./Roles');
-const uniqueValidator = require('mongoose-unique-validator');
 const UserSchema = new mongoose.Schema(
     {
         name : {
@@ -13,14 +12,12 @@ const UserSchema = new mongoose.Schema(
         username : {
             type : String ,
             required : true ,
-            unique : true ,
             min : 4 ,
             max : 255
         },
         email : {
             type : String , 
             required : true ,
-            unique : true ,
             min : 6 ,
             max : 255
         },
@@ -44,6 +41,5 @@ const UserSchema = new mongoose.Schema(
  );
 
  UserSchema.plugin(aggregatePaginate);
- UserSchema.plugin(uniqueValidator , { message: 'Error, expected {PATH} to be unique.' });
 
 module.exports = mongoose.model('User' , UserSchema);
