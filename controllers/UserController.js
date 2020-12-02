@@ -63,7 +63,6 @@ async function update ( req, res ) {
 
     const currentUser = await UserServiceInstance.findById(req.params.id);
     if(currentUser.body){
-      console.log(currentUser.body);
       if(currentUser.body.username !== req.body.username){
         const existedUserName = await UserServiceInstance.getByUsername(req.body.username);
         if(existedUserName.body){
