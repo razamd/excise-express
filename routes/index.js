@@ -4,6 +4,8 @@ const authRoute = require("./auth");
 const roleRoute = require('./role');
 const permissionRoute = require('./permission');
 const moudleRoute = require('./modules');
+const departmentRoute = require('./department');
+const employeeRoute = require('./employee');
 const cors = require('cors');
 const { validateToken } = require("../middlewares/token");
 
@@ -24,7 +26,8 @@ const routes = app => {
   app.use("/authenticate", authRoute);
   app.use("/permission" , permissionRoute);
   app.use("/module" , moudleRoute);
-
+  app.use("/department" , departmentRoute);
+  app.use("/employee" , employeeRoute);
 
 };
 

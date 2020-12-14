@@ -1,21 +1,26 @@
 const MongooseService = require( "./MongooseService" ); // Data Access Layer
-const Role = require( "../models/Roles" ); // Database Model
+const Department = require( "../models/Department" ); // Database Model
 const logger = require("./Logger");
+const { aggregate } = require("../models/Department");
 
-class RoleService {
+class DepartmentService {
   /**
-   * @description Create an instance of role Service
+   * @description Create an instance of Department Service
    */
   constructor () {
     // Create instance of Data Access layer using our desired model
-    this.MongooseServiceInstance = new MongooseService( Role );
+    this.MongooseServiceInstance = new MongooseService( Department );
   }
 
-  
-  async create ( role ) {
+  /**
+   * @description Attempt to create a Department with the provided object
+   * @param DepartmentToCreate {object} Object containing all required fields to
+   * create Department
+   * @returns {Promise<{success: boolean, error: *}|{success: boolean, body: *}>}
+   */
+  async create ( departmentToCreate ) {
     try {
-      
-      const result = await this.MongooseServiceInstance.create( role );
+      const result = await this.MongooseServiceInstance.create( departmentToCreate );
       return { success: true, body: result };
     } catch ( err ) {
       return { success: false, error: err };
@@ -25,19 +30,9 @@ class RoleService {
   async findById( id ){
     try {
       const query = {active : true , _id : id };
-      const projection = { __v : 0 , active : 0};
-      const result = await this.MongooseServiceInstance.findOne(query , projection , undefined , 'permissions');
-      return { success: true, body: result };
-    } catch (error) {
-      return { success: false, error: err };
-    }
-  }
-
-  async getAll(){
-    try {
-      const query = {active : true };
-      const projection = { __v : 0 , active : 0 , users : 0};
-      const result = await this.MongooseServiceInstance.find(query , projection);
+      const projection = { __v : 0  , active : 0};
+      
+      const result = await this.MongooseServiceInstance.findOne(query , projection);
       return { success: true, body: result };
     } catch (error) {
       console.log(error);
@@ -45,11 +40,31 @@ class RoleService {
     }
   }
 
-
-  async update (id , role ) {
+  async getAll(){
     try {
-     
-      const result = await this.MongooseServiceInstance.update(id , role , { runValidators: true, context: 'query' });
+      const query = {active : true };
+      const projection = { __v : 0 , active : 0};
+      const result = await this.MongooseServiceInstance.find(query , projection ,undefined , undefined);
+      return { success: true, body: result };
+    } catch (error) {
+      return { success: false, error: err };
+    }
+  }
+
+  async getByDepartmentname(departmentname){
+    try {
+      const result = await this.MongooseServiceInstance.findOne({'name' : departmentname , active : true });
+      return { success: true, body: result };
+    } catch (error) {
+      return { success: false, error: err };
+    }
+  }
+
+
+  async update (id , departmentToUpdate ) {
+    try {
+      
+      const result = await this.MongooseServiceInstance.update(id , departmentToUpdate , { runValidators: true, context: 'query' });
       return { success: true, body: result };
     } catch ( err ) {
       return { success: false, error: err };
@@ -75,7 +90,7 @@ class RoleService {
         sort : sort
     };
     
-    const myAggregate = Role.aggregate(
+    const myAggregate = Department.aggregate(
         [
             { $addFields: 
                 { result: 
@@ -83,18 +98,16 @@ class RoleService {
                         [
                             { $regexMatch: 
                                 { input: "$name", regex: name , options: "si"} 
-                            }
+                            } 
                         ]
                     }
                 }
             },
-            { $match: { result: true  , active : true } }
-            
-            //{ $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
+            { $match: { result: true , active : true } }
         ]
 
     );
-    const result = await Role.aggregatePaginate(myAggregate, options);
+    const result = await Department.aggregatePaginate(myAggregate, options);
 
       return { success: true, body: result };
     } catch ( err ) {
@@ -105,26 +118,17 @@ class RoleService {
   
   }
 
-  async updateWithQuery (id , role ) {
+  async updateWithQuery (id , departmentToUpdate ) {
     try {
       const query = {active : true , _id : id};
       
-      const result = await this.MongooseServiceInstance.updateWithQuery(query , role , { runValidators: true, context: 'query' });
-      return { success: true, body: 'Role Updated Successfully' };
-    } catch ( err ) {
-      return { success: false, error: err };
-    }
-  }
-
-  async getByName(name){
-    try {
-      const result = await this.MongooseServiceInstance.findOne({'name' : name , active : true });
+      const result = await this.MongooseServiceInstance.updateWithQuery(query , departmentToUpdate , { runValidators: true, context: 'query' });
       return { success: true, body: result };
-    } catch (error) {
+    } catch ( err ) {
       return { success: false, error: err };
     }
   }
 
 }
 
-module.exports = RoleService;
+module.exports = DepartmentService;
