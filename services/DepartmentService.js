@@ -67,6 +67,7 @@ class DepartmentService {
       const result = await this.MongooseServiceInstance.update(id , departmentToUpdate , { runValidators: true, context: 'query' });
       return { success: true, body: result };
     } catch ( err ) {
+      console.log(err);
       return { success: false, error: err };
     }
   }

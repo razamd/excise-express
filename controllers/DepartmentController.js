@@ -59,7 +59,7 @@ async function update ( req, res ) {
     const currentDepartment = await DepartmentServiceInstance.findById(req.params.id);
     if(currentDepartment.body){
       if(currentDepartment.body.name !== req.body.name){
-        const existedName = await DepartmentServiceInstance.getByName(req.body.name);
+        const existedName = await DepartmentServiceInstance.getByDepartmentname(req.body.name);
         if(existedName.body){
           return res.status(200).send({ success: false, error: 'name already exist' });
         }
