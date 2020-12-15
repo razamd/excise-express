@@ -1,5 +1,5 @@
 const express = require( 'express' );
-const {create , findById , getAll , update, paginationViews, deletePermission, updateWithQuery} = require('../controllers/PermissionController');
+const {create , findById , getAll , update, paginationViews, deletePermission, updateWithQuery, findByModuleId} = require('../controllers/PermissionController');
 const { idIsPresent, bodyIsPresent } = require('../middlewares/validators/Cords');
 let router = express.Router();
 
@@ -29,6 +29,10 @@ router.get('/delete/:id' ,idIsPresent , ( req , res ) => {
 
 router.post('/updatewq/:id' ,idIsPresent , bodyIsPresent , ( req , res ) => {
     updateWithQuery( req , res );
+});
+
+router.get('/getByModuleId/:id' ,idIsPresent , ( req , res ) => {
+    findByModuleId( req , res );
 });
 
 module.exports = router;

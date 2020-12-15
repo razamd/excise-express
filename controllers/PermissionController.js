@@ -3,7 +3,8 @@ const logger = require("../services/Logger");
 const PermissionService = require( "../services/PermissionService" );
 const PermissionServiceInstance = new PermissionService();
 
-module.exports = { create , findById , getAll , update , paginationViews , deletePermission , updateWithQuery};
+module.exports = { create , findById , getAll , update , 
+  paginationViews , deletePermission , updateWithQuery , findByModuleId};
 
 /**
  * @description Create a cord with the provided body
@@ -100,6 +101,16 @@ async function updateWithQuery ( req, res ) {
     // We only pass the body object, never the req object
     const result = await PermissionServiceInstance.updateWithQuery( req.params.id, req.body );
     return res.send( result );
+  } catch ( err ) {
+    res.status( 500 ).send( err );
+  }
+}
+
+async function findByModuleId ( req , res ) {
+
+  try {
+    const permissions = await PermissionServiceInstance.findByModuleId( req.params.id );
+    return res.json( { success: true, body: permissions } );
   } catch ( err ) {
     res.status( 500 ).send( err );
   }

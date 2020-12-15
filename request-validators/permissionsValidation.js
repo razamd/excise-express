@@ -12,7 +12,9 @@ const createUpdateValidation = data => {
         min(2)
         .required(),
        
-        url : Joi.string()
+        url : Joi.string(),
+        moduleId : Joi.string().allow(null, '')
+
     });
     return schema.validate(data);
 }

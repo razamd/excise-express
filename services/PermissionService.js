@@ -26,7 +26,7 @@ class PermissionService {
     try {
       const query = {active : true , _id : id };
       const projection = { __v : 0 , active : 0};
-      const result = await this.MongooseServiceInstance.findOne(query , projection);
+      const result = await this.MongooseServiceInstance.findOne(query , projection , undefined , 'moduleId');
       return { success: true, body: result };
     } catch (error) {
       return { success: false, error: err };
@@ -37,7 +37,7 @@ class PermissionService {
     try {
       const query = {active : true };
       const projection = { __v : 0 , active : 0 , users : 0};
-      const result = await this.MongooseServiceInstance.find(query , projection);
+      const result = await this.MongooseServiceInstance.find(query , projection , undefined , undefined , 'moduleId');
       return { success: true, body: result };
     } catch (error) {
       console.log(error);
@@ -89,6 +89,9 @@ class PermissionService {
                 }
             },
             { $match: { result: true  , active : true } }
+            ,{
+              $project : { active :0 , __v :0 , result :0 }
+            }
             
             //{ $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
         ]
@@ -116,6 +119,16 @@ class PermissionService {
     }
   }
 
+  async findByModuleId( moduleId ){
+    try {
+      const query = {active : true , moduleId : moduleId };
+      const projection = { __v : 0 , active : 0 , moduleId :0};
+      const result = await this.MongooseServiceInstance.find(query , projection);
+      return result;
+    } catch (error) {
+      return { success: false, error: err };
+    }
+  }
 }
 
 module.exports = PermissionService;

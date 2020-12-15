@@ -104,6 +104,9 @@ class DepartmentService {
                 }
             },
             { $match: { result: true , active : true } }
+            ,{
+              $project : { active :0 , __v :0 , result :0 }
+            }
         ]
 
     );

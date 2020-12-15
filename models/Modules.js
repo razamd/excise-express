@@ -20,13 +20,7 @@ const ModuleSchema = new Schema(
             type : Boolean ,
             default : true ,
             required : true
-        },
-        permissions : [
-            {
-                type : Schema.Types.ObjectId,
-                ref : 'Permissions'
-            }
-        ]
+        }
     } , 
     {timestamps: true}
  );

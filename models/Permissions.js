@@ -23,6 +23,10 @@ const PermissionsSchema = new Schema(
             min : 2 ,
             max : 4000
         },
+        moduleId : {
+            type : Schema.Types.ObjectId,
+            ref : 'Module'
+        },
         
         active : {
             type : Boolean ,

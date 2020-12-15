@@ -1,6 +1,8 @@
 const MongooseService = require( "./MongooseService" ); // Data Access Layer
 const Modules = require( "../models/Modules" ); // Database Model
 const logger = require("./Logger");
+const PermissionService = require("./PermissionService");
+const PermissionServiceInstance = null;
 
 class ModuleService {
   /**
@@ -9,6 +11,7 @@ class ModuleService {
   constructor () {
     // Create instance of Data Access layer using our desired model
     this.MongooseServiceInstance = new MongooseService( Modules );
+    this.PermissionServiceInstance = new PermissionService();
   }
 
   
@@ -27,6 +30,8 @@ class ModuleService {
       const query = {active : true , _id : id };
       const projection = { __v : 0 , active : 0};
       const result = await this.MongooseServiceInstance.findOne(query , projection , undefined , 'permissions');
+      const permissions = await this.PermissionServiceInstance.findByModuleId(id);
+      result.permissions = permissions;
       return { success: true, body: result };
     } catch (error) {
       console.log(error);
@@ -37,8 +42,30 @@ class ModuleService {
   async getAll(){
     try {
       const query = {active : true };
-      const projection = { __v : 0 , active : 0 , users : 0};
-      const result = await this.MongooseServiceInstance.find(query , projection);
+      const projection = { __v : 0 , active : 0 , users : 0 , permissions : 0};
+      //const result = await this.MongooseServiceInstance.find(query , projection);
+      
+      const agr  =  [
+        {
+          "$match" : {active : true }
+        },
+        {
+          "$project" : { __v : 0 , active : 0 }
+        },
+        {
+            
+            "$lookup": {
+                "from": "permissions",
+                "localField": "_id",
+                "foreignField": "moduleId",
+                "as": "permissions",
+                
+            }
+            
+        }
+     ] ;
+     const result = await this.MongooseServiceInstance.aggregate(agr);
+
       return { success: true, body: result };
     } catch (error) {
       console.log(error);
@@ -90,6 +117,9 @@ class ModuleService {
                 }
             },
             { $match: { result: true  , active : true } }
+            ,{
+              $project : { active :0 , __v :0 , result :0 }
+            }
             
             //{ $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
         ]
