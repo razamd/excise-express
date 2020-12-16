@@ -86,7 +86,7 @@ async function paginationViews ( req , res ) {
     const limit = req.body.limit;
     const sort = req.body.sort;
     const name = req.body.name;
-    console.log(page , limit , sort ,name  );
+    //console.log(page , limit , sort ,name  );
     const employees = await EmployeeServiceInstance.paginationViews(page , limit , sort , name );
     return res.send( employees );
   } catch ( err ) {

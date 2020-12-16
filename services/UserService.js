@@ -159,6 +159,14 @@ class UserService {
             { $match: { result: true , active : true } }
             ,{
               $project : {password : 0 , active : 0 , __v : 0 , result : 0 }
+            },
+            { 
+              $lookup: {
+                  from: "roles",
+                  localField: "roleId",
+                  foreignField: "_id",
+                  as: "role",                  
+              }                
             }
             
             //{ $group: { _id: "$cust_id", total: { $sum: "$amount" } } }

@@ -91,6 +91,14 @@ class PermissionService {
             { $match: { result: true  , active : true } }
             ,{
               $project : { active :0 , __v :0 , result :0 }
+            },
+            { 
+              $lookup: {
+                  from: "modules",
+                  localField: "moduleId",
+                  foreignField: "_id",
+                  as: "module",                  
+              }                
             }
             
             //{ $group: { _id: "$cust_id", total: { $sum: "$amount" } } }
